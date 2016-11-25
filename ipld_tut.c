@@ -5,7 +5,7 @@ int main()
 	NODE_H_DEBUG = 0;
 	
 	//Load a node from string:
-	char * str = "{\"@context\": \"/ipfs/Qmf1ec6n9f8kW8JTLjqaZceJVpDpZD4L3aPoJFvssBE7Eb/merkleweb\", \"@type\": \"node\", \"FIELD1\": { \"@value\": \"Qmabcbcbdba\", \"@type\": \"mlink\" }, \"FIELD2\": { \"@value\": \"Qmabcbcbdba2\", \"@type\": \"mlink\" } }";
+	char * str = "{\"@context\": \"/ipfs/Qmf1ec6n9f8kW8JTLjqaZceJVpDpZD4L3aPoJFvssBE7Eb/merkleweb\", \"@type\": \"node\", \"FIELD1\": { \"@value\": \"Qmf1ec6n9f8kW8JTLjqaZceJVpDpZD4L3aPoJFvssBE7Eb\", \"@type\": \"mlink\" }, \"FIELD2\": { \"@value\": \"Qmf1ec6n9f8kW8JTLjqaZceJVpDpZD4L3aPoJFvssBE7Eb\", \"@type\": \"mlink\" } }";
 	struct NODE A;
 	A = LOAD_NODE(str);
 	
@@ -49,15 +49,16 @@ int main()
 	printf("LINK CONTENTS: \n------------\n%s\n------------\n", linkstr);
 	free(linkstr);
 	//Access Name
-	printf("LINK NAME: %s\n", L.name);
+	printf("LINK NAME:\t%s\n", L.name);
 	
 	//Access Type
-	printf("LINK TYPE: %s\n", L.type);
+	printf("LINK TYPE:\t%s\n", L.type);
 	
 	//Access Hash
-	printf("LINK HASH: %s\n", L.hash);
+	printf("LINK HASH:\t%s\n", L.hash);
 	
 	//Access b58Hash
+	printf("LINK B58HASH:\t%s\n", L.b58hash);
 	
 	//Free all nodes, links, link pointer array
 	for(int i=0; i<linknum;i++){free(links[i]);} //FREE(Link char pointer array)
@@ -66,24 +67,3 @@ int main()
 	
 	return 0;
 }
-/*
-	json_t * obj;
-	const char * str = "{\"FIELD1\": { \"@value\": \"Qmabcbcbdba\", \"@type\": \"mlink\" }, \"FIELD2\": { \"@value\": \"Qmabcbcbdba2\", \"@type\": \"mlink\" } }";
-    json_error_t error;
-	obj = json_loads(str, 0, &error);
-	char * lol;
-	lol = json_dumps(obj, JSON_INDENT(1));
-	printf("LOL: %s", lol);
-	free(lol);
-	json_decref(obj);
-	//WORKING FOREACH
-		const char *key;
-	json_t * value;
-	json_object_foreach(A.obj, key, value) 
-	{
-		char * valinchr;
-		valinchr = json_dumps(value, JSON_INDENT(0));
-		printf("KEY: %s\nValue: %s\n", key, valinchr);
-    	free(valinchr);
-	}
-*/

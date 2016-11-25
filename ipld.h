@@ -5,12 +5,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <jansson.h>
-
+#include "base58.h"
+#include "varhexutils.h"
 //Predefined values:
 #define IDKey "@id"
 #define TypeKey "@type"
 #define ValueKey "@value"
-#define CtxKey "@context"
+#define CtxKey "@/home/xethyrion/Desktop/Bak/varint.hcontext"
 #define CodecKey "@codec"
 #define LinkKey "mlink"
 
@@ -28,7 +29,7 @@ struct NODE
 /* LOAD_NODE(@param1)
  * Creates a new node from a string.
  * @Param1 a json string(char *)
- * returns a json_t object! (jansson.h)
+ * returns a json_t /home/xethyrion/Desktop/Bak/varint.hobject! (jansson.h)
 */
 struct NODE LOAD_NODE(char * str)
 {
@@ -275,9 +276,9 @@ void lType(char * str, struct LINK O)
 	}
 }
 
-/* lType(@param1,@param2)
- * Gets the type of the link, of course, it should be an mlink.
- * @param1: LINK.type //Storing in type from LINK struct.
+/* lHash(@param1,@param2)
+ * Gets the hash of the link, not b58 decoded
+ * @param1: LINK.hash //Storing in hash from LINK struct.
  * @param2: LINK // The link structure we are using.
 */
 void lHash(char * str, struct LINK O)
@@ -323,7 +324,40 @@ void lName(char * str, struct LINK O)
 		strcat(str, key);
 	}
 }
-
+/*B58Hash(@param1, @parunsigned char** binary_dataam2)
+ *Decodes the hash, and stores it into a char from your link struct
+*/
+void lb58Hash(char * str, struct LINK X) //Need to find out if prefixed or not!
+{
+	char * hash = X.hash;
+	size_t hash_length = strlen(hash);
+	size_t result_buffer_length = libp2p_crypto_encoding_base58_decode_max_size(hash);
+	unsigned char result_buffer[result_buffer_length];
+	unsigned char * ptr_2_result = result_buffer;
+	memset(result_buffer, 0, result_buffer_length);
+	int valid = libp2p_crypto_encoding_base58_decode(hash,hash_length,&ptr_2_result, &result_buffer_length);
+	printf("IS_VALID: %d\n",valid);
+	char HReadable[1000];
+	bzero(HReadable,1000);
+	int ilen = 0;
+	for(int i = 0; i<result_buffer_length;i++)
+	{
+		unsigned char c = ptr_2_result[i];
+		char miu[3];
+		bzero(miu,3);
+		sprintf(miu,"%02x",c);
+		miu[3] = '\0';
+		strcat(HReadable, miu);
+	}
+	//DEBUG
+	if(NODE_H_DEBUG == 1)
+	{
+		printf("Normal hash: %s\n", hash);
+		printf("Result: %s\n", HReadable);
+	}
+	strcat(str, HReadable);
+	
+}
 /* LOAD_LINK(@param1)
  * Creates a new LINK from a string.
  * @Param1 a json string(char *)
@@ -344,6 +378,7 @@ struct LINK LOAD_LINK(char * str)
 	lName(X.name, X);
 	lType(X.type, X);
 	lHash(X.hash, X);
+	lb58Hash(X.b58hash, X);
 	return X;
 }
 /* Unload_LINK(@param1) - Same as unload_node, makes it easier to avoid leaks and better structuring of your programs
