@@ -11,7 +11,7 @@
 #define IDKey "@id"
 #define TypeKey "@type"
 #define ValueKey "@value"
-#define CtxKey "@/home/xethyrion/Desktop/Bak/varint.hcontext"
+#define CtxKey "@context"
 #define CodecKey "@codec"
 #define LinkKey "mlink"
 
@@ -29,7 +29,7 @@ struct NODE
 /* LOAD_NODE(@param1)
  * Creates a new node from a string.
  * @Param1 a json string(char *)
- * returns a json_t /home/xethyrion/Desktop/Bak/varint.hobject! (jansson.h)
+ * returns a json_t object! (jansson.h)
 */
 struct NODE LOAD_NODE(char * str)
 {
